@@ -1,0 +1,39 @@
+version: '3.6'
+services:
+  zapsidatabase:
+    networks:
+      - zapsi
+    container_name: zapsidatabase
+    image: 'petrjahoda/zapsidatabase-mariadb:test'
+    logging:
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: '10'
+    volumes:
+      - 'zapsidb:/var/lib/mysql'
+      - 'zapsidblogs:/var/log/mysql'
+    ports:
+      - '3306:3306'
+    restart: always
+    environment: []
+  zapsiserverefcore:
+    networks:
+      - zapsi
+    container_name: zapsiserverefcore
+    image: 'petrjahoda/zapsiserverefcore:latest'
+    logging:
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: '10'
+    volumes:
+      - 'zapsiserverefcore:/publish'
+    restart: always
+
+volumes:
+  zapsidb: null
+  zapsidblogs: null
+  zapsiserverefcore: null
+networks:
+  zapsi: null

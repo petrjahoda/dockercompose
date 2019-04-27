@@ -1,0 +1,115 @@
+version: '3.6'
+services:
+  zapsidatabase:
+    networks:
+      - zapsi
+    container_name: zapsidatabase
+    image: 'petrjahoda/zapsidatabase-win:latest'
+    logging:
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: '10'
+    ports:
+      - '3306:3306'
+    command: ping -t localhost
+    restart: always
+  zapsiserver:
+    networks:
+      - zapsi
+    container_name: zapsiservercore
+    image: 'petrjahoda/zapsiservercore-win:latest'
+    logging:
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: '10'
+    depends_on:
+      - zapsidatabase
+    restart: always
+  stateserver:
+    networks:
+      - zapsi
+    container_name: stateservercore
+    image: 'petrjahoda/stateservercore-win:latest'
+    logging:
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: '10'
+    depends_on:
+      - zapsidatabase
+    restart: always
+  printserver:
+    networks:
+      - zapsi
+    container_name: printservercore
+    image: 'petrjahoda/printservercore-win:latest'
+    logging:
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: '10'
+    depends_on:
+      - zapsidatabase
+    restart: always
+  terminalserver:
+    networks:
+      - zapsi
+    container_name: terminalservercore
+    image: 'petrjahoda/terminalservercore-win:latest'
+    logging:
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: '10'
+    depends_on:
+      - zapsidatabase
+    restart: always
+  alarmserver:
+    networks:
+      - zapsi
+    container_name: alarmservercore
+    image: 'petrjahoda/alarmservercore-win:latest'
+    logging:
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: '10'
+    depends_on:
+      - zapsidatabase
+    restart: always
+  plcserver:
+    networks:
+      - zapsi
+    container_name: plcservercore
+    image: 'petrjahoda/plcservercore-win:latest'
+    logging:
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: '10'
+    depends_on:
+      - zapsidatabase
+    restart: always
+  zapsiweb:
+    networks:
+      - zapsi
+    container_name: zapsiweb
+    image: 'petrjahoda/zapsiweb-win:latest'
+    logging:
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: '10'
+    ports:
+      - '80:80'
+    command: c:/src2/zapsi/check.bat && ping -t localhost
+    depends_on:
+      - zapsidatabase
+    restart: always
+
+networks:
+  zapsi:
+    external:
+      name: nat
